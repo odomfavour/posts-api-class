@@ -1,0 +1,54 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #ccc;
+}
+
+.container {
+  width: 90%;
+  margin: 60px auto 30px auto;
+}
+
+.card-holder {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.card {
+  background: white;
+  border-radius: 20px;
+  /* box-shadow: 2px 3px 4px #acf1b8; */
+  width: 23%;
+  padding: 20px;
+}
+
+.btn-container {
+  display: flex;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.btn {
+  border: 2px solid #5960b8;
+  border-radius: 10px;
+  background: #5960b8;
+  color: white;
+  padding: 5px 20px;
+  cursor: pointer;
+}
+
+.form-section {
+  margin-bottom: 30px;
+}
+
+
+@media (max-width: 769px) {
+  .card {
+    width: 100%;
+  }
+}
