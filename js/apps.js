@@ -8,27 +8,9 @@ function getPosts() {
   fetch("https://jsonplaceholder.typicode.com/posts")
     .then((resp) => resp.json())
     .then((data) => {
-      let cardHtml = "";
       posts = data;
       console.log(posts);
-      posts.forEach((post, index) => {
-        const { userId, id, title, body } = post;
-        cardHtml += `
-            <div class="card">
-                <p>UserId: ${userId}</p>
-                <p>Id: ${id}</p>
-                <h4>${title}</h4>
-                <p>${body}</p>
-                <div class="btn-container">
-                    <button class="btn" onclick="">Edit</button>
-                    <button class="btn">View</button>
-                    <button class="btn" onclick="deletePost(${id})">Delete</button>
-                </div>
-            </div>
-            `;
-      });
-
-      cardHolder.innerHTML = cardHtml;
+     renderUI(posts)
     });
 }
 
@@ -53,25 +35,8 @@ function createPost(e) {
     .then((data) => {
       let cardHtml = "";
       posts.unshift(data);
-
-      posts.forEach((post, index) => {
-        const { userId, id, title, body } = post;
-        cardHtml += `
-            <div class="card">
-                <p>UserId: ${userId}</p>
-                <p>Id: ${id}</p>
-                <h4>${title}</h4>
-                <p>${body}</p>
-                <div class="btn-container">
-                    <button class="btn" onClick="">Edit</button>
-                    <button class="btn">View</button>
-                    <button class="btn" onclick="deletePost(${id})">Delete</button>
-                </div>
-            </div>
-            `;
-      });
-
-      cardHolder.innerHTML = cardHtml;
+      renderUI(posts)
+      
     });
 }
 
@@ -85,27 +50,55 @@ function deletePost(postId) {
       .then((resp) => resp.json())
       .then((data) => {
         posts = posts.filter(post => post.id !== postId)
-
-        let cardHtml = "";
-  
-        posts.forEach((post, index) => {
-          const { userId, id, title, body } = post;
-          cardHtml += `
-              <div class="card">
-                  <p>UserId: ${userId}</p>
-                  <p>Id: ${id}</p>
-                  <h4>${title}</h4>
-                  <p>${body}</p>
-                  <div class="btn-container">
-                      <button class="btn" onClick="">Edit</button>
-                      <button class="btn">View</button>
-                      <button class="btn" onclick="deletePost(${id})">Delete</button>
-                  </div>
-              </div>
-              `;
-        });
-  
-        cardHolder.innerHTML = cardHtml;
-      });
+        renderUI(posts)
+      })
+       
   }
+}
+
+function editPost(postId) {
+  fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`,  {
+    method: "PUT",
+    body: JSON.stringify({
+      title: pTitle.value,
+      body: pBody.value,
+      userId: 1,
+    }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  })
+  .then(res => res.json())
+  .then(data => {
+    console.log(data)
+    document.querySelector(`.post-title-${postId}`).innerHTML = data.title
+    document.querySelector(`.post-body-${postId}`).innerHTML = data.bod
+  })
+}
+
+function viewPost(postId) {
+  localStorage.setItem('postId', postId)
+  window.location.href = 'single.html'
+}
+
+function renderUI (arr) {
+  let cardHtml = "";
+  posts.forEach((post, index) => {
+    const { userId, id, title, body } = post;
+    cardHtml += `
+        <div class="card">
+            <p>UserId: ${userId}</p>
+            <p>Id: ${id}</p>
+            <h4 class="post-title-${id}">${title}</h4>
+            <p class="post-body-${id}">${body}</p>
+            <div class="btn-container">
+                <button class="btn" onclick="editPost(${id})">Edit</button>
+                <button class="btn" onclick="viewPost(${id})">View</button>
+                <button class="btn" onclick="deletePost(${id})">Delete</button>
+            </div>
+        </div>
+        `;
+  });
+
+  cardHolder.innerHTML = cardHtml;
 }
